@@ -1,0 +1,20 @@
+{
+  "name": "mixer-variety-bot",
+  "version": "0.0.1",
+  "description": "A bot for Mixer that periodically chooses a random streamer to host on a channel.",
+  "main": "index.js",
+  "packages": [
+    "mixer/client-node"
+  ],
+  "scripts": {
+    "test": "test-variety-bot"
+  },
+  "keywords": [
+    "mixer",
+    "variety",
+    "stream",
+    "host"
+  ],
+  "author": "Justin Telmo",
+  "license": "ISC"
+}
