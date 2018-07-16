@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "description": "A bot for Mixer that periodically chooses a random streamer to host on a channel.",
   "main": "index.js",
-  "packages": [
-    "mixer/client-node"
-  ],
   "scripts": {
     "test": "test-variety-bot"
   },
@@ -16,5 +13,8 @@
     "host"
   ],
   "author": "Justin Telmo",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@mixer/client-node": "github:mixer/client-node"
+  }
 }
