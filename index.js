@@ -35,29 +35,47 @@ app.get('/', (request, reply) => {
 
 app.get('/callback', (request, reply) => {
     const oauth = client.getProvider();
-    var channelService = new Mixer.ChannelService(client);
     oauth.attempt(redirectUri, request.query)
         .then(() => {
-            console.log("Successfully authenticated!");
             return client.request('GET', 'users/current');
-        }).then(res => {
-            currentChannel = res.body.channel;
-            console.log("Grabbed current user!");
-            return channelService.getChannel('ahhreggi');
-        }).catch(err => reply.json(err))
+        })
         .then(res => {
-            let hosteeChannelId = res.body.userId;
-            console.log("attempting to host");
-            console.log(currentChannel);
-            client.request('PUT', `channels/${currentChannel.id}/hostee`, {body: {id: res.body.id}})
+            currentChannel = res.body.channel;
+            return client.request('GET', 'types', {
+                qs: {
+                    order: 'viewersCurrent:DESC',
+                    limit: 50
+                }
+            });
+        }).then(res => {
+            // Grab all games from response
+            const games = res.body;
+
+            // Cut off top 5 games
+            for (let i = 0; i < 5; i++) {
+                games.splice(i, 1);
+            }
+
+            // Grab random element from remaining 45 games
+            const randomType = games[Math.floor(Math.random() * games.length)];
+            return client.request('GET', 'channels', {
+                qs:{
+                    where: `typeId:eq:${randomType.id}`,
+                    order: 'viewersCurrent:DESC',
+                    limit: 50
+                }
+            });
+        })
+        .then(res => {
+            const channelsStreamingRandomGame = res.body;
+
+            const randomChannelStreamingRandomGame = channelsStreamingRandomGame[Math.floor(Math.random() * channelsStreamingRandomGame.length)];
+
+            client.request('PUT', `channels/${currentChannel.id}/hostee`, {body: {id: randomChannelStreamingRandomGame.id}})
                 .then(res => {
                     reply.json(oauth.getTokens());
-                    console.log(res);  
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        });            
+                }).catch(err => reply.json(err));
+        }).catch(err => reply.json(err));            
 });
 
 app.listen(port, () => {

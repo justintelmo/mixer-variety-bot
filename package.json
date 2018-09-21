@@ -4,7 +4,7 @@
   "description": "A bot for Mixer that periodically chooses a random streamer to host on a channel.",
   "main": "index.js",
   "scripts": {
-    "test": "test-variety-bot"
+    "start": "node index.js"
   },
   "keywords": [
     "mixer",
